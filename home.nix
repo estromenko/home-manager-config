@@ -21,8 +21,6 @@
     google-chrome
     # For language servers
     nodejs
-    nixd
-    nil
   ];
 
   home.sessionVariables = {EDITOR = "vim";};
@@ -34,7 +32,12 @@
   '';
 
   programs.home-manager.enable = true;
-  programs.fish.enable = true;
+  programs.fish = {
+    enable = true;
+    interactiveShellInit = ''
+      starship init fish | source
+    '';
+  };
   programs.starship = {
     enable = true;
     settings = {
@@ -48,14 +51,24 @@
   programs.zed-editor = {
     enable = true;
     package = config.lib.nixGL.wrap pkgs.zed-editor;
-    extensions = ["nix" "python" "dockerfile" "yaml"];
-    userSettings = {vim_mode = true;};
+    extensions = ["nix" "python" "dockerfile" "yaml" "toml" "git-firefly"];
+    userSettings = {
+      vim_mode = true;
+      telemetry = {
+        metrics = false;
+      };
+      theme = "One Dark";
+    };
   };
   programs.git = {
     enable = true;
     userEmail = "estromenko@mail.ru";
     userName = "estromenko";
     extraConfig.init.defaultBranch = "master";
+  };
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
   };
 
   xdg.configFile."shell".source = lib.getExe pkgs.fish;
